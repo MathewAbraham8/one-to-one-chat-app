@@ -42,9 +42,18 @@ export default function ChatPanel({ token, currentUsername, onLogout }) {
   useEffect(() => {
     const connectWS = () => {
       setWsStatus('connecting');
-      const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const wsHost = window.location.hostname === 'localhost' ? 'localhost:8000' : `${window.location.hostname}:8000`;
-      const wsUrl = `${wsProto}//${wsHost}/ws?token=${token}`;
+      
+      let wsUrl;
+      try {
+        const apiDomain = new URL(API_URL);
+        const wsProto = apiDomain.protocol === 'https:' ? 'wss:' : 'ws:';
+        wsUrl = `${wsProto}//${apiDomain.host}/ws?token=${token}`;
+      } catch (err) {
+        // Fallback if API_URL is relative or invalid
+        const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsHost = window.location.hostname === 'localhost' ? 'localhost:8000' : `${window.location.hostname}:8000`;
+        wsUrl = `${wsProto}//${wsHost}/ws?token=${token}`;
+      }
       
       const ws = new WebSocket(wsUrl);
       wsRef.current = ws;

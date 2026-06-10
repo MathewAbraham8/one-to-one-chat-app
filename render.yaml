@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: chat-backend
+    env: docker
+    dockerfilePath: Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: chat-db
+          property: connectionString
+      - key: ALLOWED_ORIGINS
+        value: "https://your-vercel-domain.vercel.app" # The user needs to update this
+
+databases:
+  - name: chat-db
+    databaseName: chat
+    user: chat_user
+    plan: free

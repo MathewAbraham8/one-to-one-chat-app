@@ -6,6 +6,10 @@ from sqlalchemy.orm import sessionmaker
 # Retrieve database URL from environment or fallback to local sqlite database
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./chat.db")
 
+# Fix Render PostgreSQL URL compatibility with SQLAlchemy
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 # check_same_thread is only needed for SQLite
 connect_args = {}
 if DATABASE_URL.startswith("sqlite"):
